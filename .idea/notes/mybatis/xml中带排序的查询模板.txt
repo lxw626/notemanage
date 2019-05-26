@@ -1,0 +1,10 @@
+<select id="find" parameterType="java.util.Map" resultMap="BaseResultMap">
+	select <include refid="Base_Column_List" />
+	from MES_IO_TQ_MQ_STOR_COMMENT
+	<where>
+		<if test="name !=null and name !='' "> name = #{name,jdbcType = vachar}</if>
+	</where>
+	order by
+	<if test = "order !=null and order !='' "> ${order}</if>
+	<if test = "order ==null or order=='' "> sid asc </if>
+<select>
