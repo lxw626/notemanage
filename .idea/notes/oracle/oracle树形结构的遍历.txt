@@ -1,0 +1,6 @@
+-- oracle查询树结构
+select *
+  from SADP_AC_RESOURCE
+ START WITH sid = 18492
+connect by prior sid = parent_sid
+ order by res_level asc, parent_sid asc, res_seq asc
