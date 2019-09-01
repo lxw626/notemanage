@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript">
+		//事件的绑定以及兼容性问题的解决,this的统一
+			window.onload = function() {
+				var btn0 = document.getElementById("btn0")
+				btn0.onclick = function() {
+					alert(1)
+				}
+				btn0.onclick = function() {
+						alert(2)
+					}
+					/**
+					 * 给一个事件绑定多个回调函数
+					 * 一般浏览器
+					 * btn.addEventListener("click",callBack,false)
+					 * 先绑定的先执行
+					 * 1.事件名称字符串,不要on
+					 * 2.回调函数
+					 * 3.是否在捕获阶段出发,一般传false
+					 * ie8及以下
+					 * btn1.attachEvent("onclick",callBack)
+					 * 先绑定的后执行
+					 * 1.事件名称字符串,要on
+					 * 2.回调函数
+					 */
+					
+					var btn1 = document.getElementById("btn1")
+					if(btn1.addEventListener){
+						btn1.addEventListener("click",function(){
+						alert(1)
+					},false)
+					btn1.addEventListener("click",function(){
+						alert(2)
+					},false)
+					}
+					if(btn1.attachEvent){
+						btn1.attachEvent("onclick",function(){
+						alert(1)
+					})
+					btn1.attachEvent("onclick",function(){
+						alert(2)
+					})
+					}
+					
+					
+				var btn2 = document.getElementById("btn2")
+				bind(btn2, "click", function() {
+					alert(1)
+				})
+				bind(btn2, "click", function() {
+						alert(this)
+					})
+					
+					/**
+					 * 解决浏览器兼容性问题以及统一this为obj
+					 * @param {Object} obj 绑定事件的对象
+					 * @param {Object} eventStr 事件字符串
+					 * @param {Object} callBack 回调函数
+					 */
+				function bind(obj, eventStr, callBack) {
+					if(obj.addEventListener) {
+						obj.addEventListener(eventStr, callBack, false)
+					} else {
+						// callBack 由浏览器调用。this为window
+						// obj.attachEvent("on"+eventStr,callBack)
+						obj.attachEvent("on" + eventStr, function() {
+							/**
+							 * 让obj调用callBach函数，
+							 * 1.调用callBack函数
+							 * 2.指定调用者(指定this)
+							 */
+							callBack.call(obj);
+
+						})
+					}
+				}
+			}
+		</script>
+	</head>
+
+	<body>
+		<button id="btn0">一个事件只能绑定一个回调函数</button><br />
+		<button id="btn1">我有兼容性问题</button><br />
+		<button id="btn2">我解决了i8的兼容性问题</button><br />
+	</body>
+
+</html>
