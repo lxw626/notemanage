@@ -1,0 +1,62 @@
+public static void mbgconfig(MBG mbg) throws Exception {
+        // 创建SAXReader对象
+        SAXReader sr = new SAXReader();
+        // 关联xml读取默认配置
+        Document document = sr.read(defaultConfigFilePath);
+        // 配置生成简单版还是豪华版
+        Element context = (Element)document.selectSingleNode("//context");
+        if(mbg.getTargetRuntime()!=null){
+            context.addAttribute("targetRuntime",mbg.getTargetRuntime());
+        }
+        // 配置要解析的表
+//        List<Map<String, String>> tableAndEntitys = mbg.getTableAndEntitys();
+        List<MBG.TableConfig> tableConfigs = mbg.getTableConfigs();
+        if(tableConfigs.size()>0){
+            for (MBG.TableConfig tableConfig : tableConfigs) {
+                Element table = context.addElement("table");
+                table.addAttribute("tableName",tableConfig.getTableName());
+                table.addAttribute("domainObjectName",tableConfig.getEntityName());
+            }
+        }
+        // 配置连接
+        Element jdbcConnection = (Element)document.selectSingleNode("//jdbcConnection");
+        if(mbg.getDriverClass()!=null){
+            jdbcConnection.addAttribute("driverClass",mbg.getDriverClass());
+        }
+        if(mbg.getConnectionURL()!=null){
+            jdbcConnection.addAttribute("connectionURL",mbg.getConnectionURL());
+        }
+        if(mbg.getUsername()!=null){
+            jdbcConnection.addAttribute("userId",mbg.getUsername());
+        }
+        if(mbg.getPassword()!=null){
+            jdbcConnection.addAttribute("password",mbg.getPassword());
+        }
+        // 配置实体类
+        Element javaModelGenerator = (Element)document.selectSingleNode("//javaModelGenerator");
+        if(mbg.getEntityPackage()!=null){
+            javaModelGenerator.addAttribute("targetPackage",mbg.getEntityPackage());
+        }
+        if(mbg.getEntityPath()!=null){
+            javaModelGenerator.addAttribute("targetProject",mbg.getEntityPath());
+        }
+        // 配置Mapp接口
+        Element javaClientGenerator = (Element)document.selectSingleNode("//javaClientGenerator");
+        if(mbg.getMapperPackage()!=null){
+            javaClientGenerator.addAttribute("targetPackage",mbg.getMapperPackage());
+        }
+        if(mbg.getMapperPath()!=null){
+            javaClientGenerator.addAttribute("targetProject",mbg.getMapperPath());
+        }
+        // 配置Mapp接口
+        Element sqlMapGenerator = (Element)document.selectSingleNode("//sqlMapGenerator");
+        if(mbg.getXmlPackage()!=null){
+            sqlMapGenerator.addAttribute("targetPackage",mbg.getXmlPackage());
+        }
+        if(mbg.getXmlPath()!=null){
+            sqlMapGenerator.addAttribute("targetProject",mbg.getXmlPath());
+        }
+        XMLWriter output = new XMLWriter(new FileWriter(new File(customizedConfigFilePath)));
+        output.write(document);
+        output.close();
+    }
